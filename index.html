@@ -4,32 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEMI</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="proto.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="barra-superior">
-        <img src="Logo4.jpg" alt="Logo izquierda" class="imagen-izquierda">
 
-        
-        <div class="texto-central">
-            <h1>CENTRO MEMI</h1>
-            <p>Centro de Mejoramiento de la Enseñanza de la Matemática y la Informática</p>
-        </div>
-
-        <img src="LogoFCyT.jpg" alt="Logo derecha" class="imagen-derecha">
+<header class="barra-superior">
+    <img src="Imagenes/Logo4.jpg" alt="Logo izquierda" class="imagen-izquierda">
+    <div class="texto-central">
+        <h1>CENTRO MEMI</h1>
+        <p>Centro de Mejoramiento de la Enseñanza de la Matemática y la Informática</p>
     </div>
+    <img src="Imagenes/LogoFCyT.jpg" alt="Logo derecha" class="imagen-derecha">
+</header>
 
-    <main class="contenido">
-        <!-- Carrusel -->
-        <div class="carrusel">
-            <div class="imagenes">
-                <img src="https://picsum.photos/id/1018/1200/600" alt="Imagen 1">
-                <img src="https://picsum.photos/id/1025/1200/600" alt="Imagen 2">
-                <img src="https://picsum.photos/id/1035/1200/600" alt="Imagen 3">
-            </div>
+<div class="top-bar">
+    <div class="menu-wrapper">
+        <button id="menu-btn">☰ Menú</button>
+        <div class="dropdown-menu" id="menu">
+            <ul>
+                <li><a href="#">Mision-Vision-Valores</a></li>
+                <li class="submenu">
+                    <a href="#">Acerca de ▾</a>
+                    <ul class="submenu-items">
+                        <li><a href="#">Antecedentes</a></li>
+                        <li><a href="#">Datos Historicos</a></li>
+                        <li><a href="#">Autoridades</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Cursos / Seminarios</a></li>
+                <li><a href="#">Publicaciones</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">ICPC UMSS</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
         </div>
-    </main>
+    </div>
+</div>
 
-    <script src="script.js"></script>
+<main class="contenido">
+    <div class="carrusel">
+        <div class="imagenes">
+            <img src="Imagenes/Portada.jpg" alt="Imagen 1">
+            <img src="Imagenes/Noticia1.jpg" alt="Imagen 2">
+            <img src="Imagenes/Noticia2.jpg" alt="Imagen 3">
+        </div>
+    </div>
+</main>
+
+<div class="social-icons">
+    <a href="https://www.facebook.com/memiumss/?locale=es_LA" target="_blank" title="Facebook">
+        <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook">
+    </a>
+    <a href="https://www.youtube.com/shorts/Zxy8tJvgArY" target="_blank" title="YouTube">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube">
+    </a>
+    <a href="https://web.archive.org/web/20160421153057/http://www.memi.umss.edu.bo/" target="_blank" title="Sitio Web">
+        <img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" alt="Web">
+    </a>
+</div>
+
+<script src="prot.js"></script>
 </body>
 </html>
