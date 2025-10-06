@@ -20,14 +20,13 @@ body {
 .imagen-izquierda,
 .imagen-derecha {
     height: 80px;
+    width: auto;
 }
 
 /* Texto centrado dentro de la barra */
 .texto-central {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     text-align: center;
+    flex-grow: 1;
 }
 .texto-central h1 {
     font-size: 60px;           /* Tamaño del texto */
@@ -35,28 +34,15 @@ body {
     color: #33CCCC;            /* Amarillo dorado */
     font-family: 'Orbitron', sans-serif; /* Fuente moderna */
     text-shadow: 2px 2px 5px rgba(0,0,0,0.5); /* Sombra para resaltar */
-    letter-spacing: 2px;       /* Espaciado entre letras */
-    text-transform: uppercase; /* Todo en mayúsculas */
+    font-weight: bold;
 }
 
 .texto-central p {
-    font-size: 18px;
-    margin: 5px 0 0;
+    font-size: 1.5vw;
+    margin: 5px 0 0 0;
     color: #FFFFFF;            /* Blanco */
     font-style: italic;        /* Texto en cursiva */
-    opacity: 0.9;              /* Un poco transparente */
 }
-
-.texto-central h1 {
-    font-size: 28px;
-    margin: 0;
-}
-
-.texto-central p {
-    font-size: 16px;
-    margin: 5px 0 0;
-}
-
 /* Fondo rojo del contenido */
 .contenido {
     background-color: #33CCCC;
@@ -89,4 +75,53 @@ body {
     height: auto;
     object-fit: cover;
     border-radius: 15px;
+}
+
+/* ⚫ Modo oscuro automático */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #222;
+    }
+
+    .barra-superior {
+        background-color: #004b99;
+    }
+
+    .contenedor-rojo {
+        background-color: #b22222;
+    }
+
+    .texto-central h1,
+    .texto-central p {
+        color: #f5f5f5;
+    }
+}
+
+@media (max-width: 1024px) {
+    .barra-superior {
+        flex-direction: row; /* Mantiene logos a los lados */
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .imagen-izquierda,
+    .imagen-derecha {
+        height: 50px;
+        width: auto;
+    }
+
+    .texto-central {
+        flex-grow: 1;
+        text-align: center;
+        margin: 0 10px;
+    }
+
+    .texto-central h1 {
+        font-size: 5.5vw;
+    }
+
+    .texto-central p {
+        font-size: 3.8vw;
+    }
 }
