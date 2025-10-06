@@ -2,23 +2,33 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Página Sencilla</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página con barra azul y carrusel responsive</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Mi Página Sencilla</h1>
+    <header class="barra-superior">
+        <img src="Logo4.jpg" alt="Logo izquierda" class="imagen-izquierda">
+
+        
+        <div class="texto-central">
+            <h1>CENTRO MEMI</h1>
+            <p>Centro de Mejoramiento de la Enseñanza de la Matemática y la Informática</p>
+        </div>
+
+        <img src="LogoFCyT.jpg" alt="Logo derecha" class="imagen-derecha">
     </header>
 
-    <main>
-        <p>Bienvenido a esta página creada con HTML, CSS y JavaScript.</p>
-        <button id="miBoton">Haz clic aquí</button>
-        <p id="mensaje"></p>
+    <main class="contenido">
+        <!-- Carrusel -->
+        <div class="carrusel">
+            <div class="imagenes">
+                <img src="https://picsum.photos/id/1018/1200/600" alt="Imagen 1">
+                <img src="https://picsum.photos/id/1025/1200/600" alt="Imagen 2">
+                <img src="https://picsum.photos/id/1035/1200/600" alt="Imagen 3">
+            </div>
+        </div>
     </main>
-
-    <footer>
-        <p>&copy; 2025 - Creada por mí</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>

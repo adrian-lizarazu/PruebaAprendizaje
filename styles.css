@@ -1,0 +1,92 @@
+/* Reset */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Barra azul superior */
+.barra-superior {
+    background-color: #002060;
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    color: white;
+    position: relative;
+}
+
+/* Imágenes laterales */
+.imagen-izquierda,
+.imagen-derecha {
+    height: 80px;
+}
+
+/* Texto centrado dentro de la barra */
+.texto-central {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+.texto-central h1 {
+    font-size: 60px;           /* Tamaño del texto */
+    margin: 0;
+    color: #33CCCC;            /* Amarillo dorado */
+    font-family: 'Orbitron', sans-serif; /* Fuente moderna */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5); /* Sombra para resaltar */
+    letter-spacing: 2px;       /* Espaciado entre letras */
+    text-transform: uppercase; /* Todo en mayúsculas */
+}
+
+.texto-central p {
+    font-size: 18px;
+    margin: 5px 0 0;
+    color: #FFFFFF;            /* Blanco */
+    font-style: italic;        /* Texto en cursiva */
+    opacity: 0.9;              /* Un poco transparente */
+}
+
+.texto-central h1 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.texto-central p {
+    font-size: 16px;
+    margin: 5px 0 0;
+}
+
+/* Fondo rojo del contenido */
+.contenido {
+    background-color: #33CCCC;
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 120px);
+}
+
+/* Carrusel adaptable */
+.carrusel {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.carrusel .imagenes {
+    display: flex;
+    width: 100%;
+    transition: transform 0.8s ease-in-out;
+}
+
+.carrusel img {
+    width: 100%;
+    flex-shrink: 0;
+    height: auto;
+    object-fit: cover;
+    border-radius: 15px;
+}
