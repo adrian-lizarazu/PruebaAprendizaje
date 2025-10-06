@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Carrusel ---
+   
     const imagenes = document.querySelector('.imagenes');
     const total = document.querySelectorAll('.imagenes img').length;
     let indice = 0;
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(siguiente, 4000);
     window.addEventListener('resize', mostrarImagen);
 
-    // --- Menú principal ---
+    
     const menuBtn = document.getElementById('menu-btn');
     const menu = document.getElementById('menu');
 
@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
         menu.classList.toggle('show');
     });
 
-    // --- Submenús general ---
+    
     document.querySelectorAll('.submenu > a').forEach(submenu => {
         submenu.addEventListener('click', (e) => {
-            e.preventDefault(); // evita navegar al enlace
+            e.preventDefault(); 
             const liPadre = submenu.parentElement;
-            liPadre.classList.toggle('show'); // abre/cierra submenú
+            liPadre.classList.toggle('show'); 
         });
     });
 
-    // --- Cerrar menú y submenús al hacer clic fuera ---
+    
     window.addEventListener('click', (e) => {
         if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
             menu.classList.remove('show');
