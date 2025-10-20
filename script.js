@@ -1,4 +1,4 @@
-// script.js - Versión corregida: selección, borrar y PouchDB (guardar/cargar)
+
 const svg = document.getElementById('svg');
 const NS = "http://www.w3.org/2000/svg";
 
@@ -9,10 +9,10 @@ let dragOffset = {x:0,y:0};
 let resizeInfo = null;
 let rotateInfo = null;
 
-/* ---------- PouchDB ---------- */
+
 const db = new PouchDB('diagram-db');
 
-/* ---------- Auxiliares ---------- */
+
 function toSvgPoint(evt){
   const pt = svg.createSVGPoint();
   pt.x = evt.clientX;
@@ -24,7 +24,7 @@ function diamondPoints(w,h){
   return [[cx,0],[w,cy],[cx,h],[0,cy]];
 }
 
-/* ---------- Crear grupo de figura (ahora acepta rot) ---------- */
+
 function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto', rot=0){
   const g = document.createElementNS(NS,'g');
   g.classList.add('shape-group');
@@ -53,7 +53,7 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto', rot=0){
     shape = document.createElementNS(NS,'polygon');
     shape.setAttribute('points', diamondPoints(w,h).map(p=>p.join(',')).join(' '));
   } else if(type === 'arrow'){
-    // línea local (horizontal). La rotación la controla el grupo.
+    
     shape = document.createElementNS(NS,'line');
     shape.setAttribute('x1', 0);
     shape.setAttribute('y1', h/2);
@@ -79,7 +79,7 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto', rot=0){
     g.appendChild(tx);
   }
 
-  // selección y handles
+  
   const sel = document.createElementNS(NS,'rect');
   sel.classList.add('selection-rect');
   sel.setAttribute('x', -6);
@@ -111,7 +111,7 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto', rot=0){
     g.appendChild(c);
   });
 
-  // Eventos (se reasignan correctamente cada vez que se crea un grupo)
+  
   g.addEventListener('pointerdown', shapePointerDown);
   g.addEventListener('dblclick', groupDoubleClick);
   g.querySelectorAll('.handle').forEach(h=>{
@@ -122,7 +122,7 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto', rot=0){
   return g;
 }
 
-/* ---------- Selección ---------- */
+
 function clearSelection(){
   if(current){
     current.classList.remove('g-selected');
@@ -134,18 +134,17 @@ function selectGroup(g){
   clearSelection();
   current = g;
   g.classList.add('g-selected');
-  // traer al frente
+  
   g.parentNode.appendChild(g);
   zIndexCounter++;
   updateGroupVisuals(g);
 }
 
-/* ---------- Mover / Redimensionar / Rotar ---------- */
 function shapePointerDown(evt){
   evt.stopPropagation();
   const g = evt.currentTarget;
   selectGroup(g);
-  // si se hizo pointerdown sobre una handle, esa handle lo manejará
+  
   if(evt.target.classList.contains('handle')) return;
 
   mode = 'drag';
@@ -230,7 +229,7 @@ function onPointerUp(evt){
   try{ if(evt.currentTarget) evt.currentTarget.releasePointerCapture?.(evt.pointerId); }catch(e){}
 }
 
-/* ---------- Actualizar visual ---------- */
+
 function updateGroupVisuals(g){
   const type = g.getAttribute('data-type');
   const x = parseFloat(g.getAttribute('data-x'));
@@ -239,7 +238,7 @@ function updateGroupVisuals(g){
   const h = parseFloat(g.getAttribute('data-h'));
   const rot = parseFloat(g.getAttribute('data-rot')) || 0;
 
-  // aplicar transform con centro en (w/2,h/2)
+  
   g.setAttribute('transform', `translate(${x},${y}) rotate(${rot} ${w/2} ${h/2})`);
 
   const shape = g.querySelector('.shape');
@@ -255,8 +254,7 @@ function updateGroupVisuals(g){
       shape.setAttribute('ry', Math.min(w,h)*0.18);
     }
   } else if(type==='arrow'){
-    // mantener la linea en coordenadas locales (horizontal),
-    // la rotación del grupo preservará la orientación real.
+    
     shape.setAttribute('x1', 0);
     shape.setAttribute('y1', h/2);
     shape.setAttribute('x2', w);
@@ -283,7 +281,7 @@ function updateGroupVisuals(g){
   });
 }
 
-/* ---------- Editar texto (manteniendo diseño original) ---------- */
+
 function groupDoubleClick(evt){
   evt.stopPropagation();
   const g = evt.currentTarget;
@@ -357,13 +355,13 @@ function groupDoubleClick(evt){
   });
 }
 
-/* ---------- Botones para agregar ---------- */
+
 document.getElementById('add-square').addEventListener('click', ()=>{ const g = makeShapeGroup('square'); selectGroup(g); });
 document.getElementById('add-round-rect').addEventListener('click', ()=>{ const g = makeShapeGroup('round-rect'); selectGroup(g); });
 document.getElementById('add-diamond').addEventListener('click', ()=>{ const g = makeShapeGroup('diamond'); selectGroup(g); });
 document.getElementById('add-arrow').addEventListener('click', ()=>{ const g = makeShapeGroup('arrow'); selectGroup(g); });
 
-/* ---------- Guardar / Cargar (PouchDB, manejo de _rev) ---------- */
+
 async function saveDiagram(){
   const groups = Array.from(svg.querySelectorAll('.shape-group')).map(g=>{
     return {
@@ -394,12 +392,12 @@ async function saveDiagram(){
 async function loadDiagram(){
   try{
     const doc = await db.get('last-diagram');
-    // eliminar grupos existentes
+    
     Array.from(svg.querySelectorAll('.shape-group')).forEach(g=>g.remove());
-    // reconstruir
+    
     doc.diagram.forEach(d=>{
       const g = makeShapeGroup(d.type, parseFloat(d.x), parseFloat(d.y), parseFloat(d.w), parseFloat(d.h), d.text, parseFloat(d.rot)||0);
-      // ya makeShapeGroup aplicó rot; aseguramos visual correcto
+      
       updateGroupVisuals(g);
     });
     clearSelection();
@@ -412,25 +410,25 @@ async function loadDiagram(){
 document.getElementById('save-diagram').addEventListener('click', saveDiagram);
 document.getElementById('load-diagram').addEventListener('click', loadDiagram);
 
-/* ---------- Click en fondo limpia selección (toma en cuenta el rect de fondo) ---------- */
+
 svg.addEventListener('pointerdown', evt=>{
-  // si se clickea exactamente el svg o el rect que está dentro del svg -> limpiar selección
+  
   if(evt.target === svg) {
     clearSelection();
     return;
   }
   if(evt.target.tagName && evt.target.tagName.toLowerCase() === 'rect' && evt.target.parentNode === svg){
-    // es el rect de fondo
+    
     clearSelection();
     return;
   }
 });
 
-/* ---------- Borrar con Delete (gestión correcta de foco/inputs) ---------- */
+
 document.addEventListener('keydown', (evt)=>{
   const active = document.activeElement;
   const activeTag = active ? active.tagName.toLowerCase() : null;
-  if(activeTag === 'input' || activeTag === 'textarea') return; // no interferir si el usuario escribe
+  if(activeTag === 'input' || activeTag === 'textarea') return; 
   if(evt.key === 'Delete' || evt.key === 'Del'){ 
     if(current){
       current.remove();
@@ -439,5 +437,5 @@ document.addEventListener('keydown', (evt)=>{
   }
 });
 
-/* ---------- Inicialización: hacer que svg pueda recibir foco para que algunos navegadores envíen keydown ------ */
+
 svg.setAttribute('tabindex', 0);
