@@ -10,6 +10,7 @@
   <aside class="toolbar">
     <h1>Diagrama</h1>
     <div class="buttons">
+
       <div class="btn-row">
         <button id="add-round-rect">Inicio/Fin</button>
         <svg class="icon-preview" viewBox="0 0 40 40">
@@ -30,19 +31,36 @@
           <polygon points="20,3 37,20 20,37 3,20" fill="#fde6b3" stroke="#c69b2b" stroke-width="2"/>
         </svg>
       </div>
-      <hr>
-    </div>
 
-    
+      <div class="btn-row">
+        <button id="add-arrow">Flecha</button>
+        <svg class="icon-preview" viewBox="0 0 40 40">
+          <line x1="5" y1="20" x2="35" y2="20" stroke="#c69b2b" stroke-width="3" marker-end="url(#arrowhead)"/>
+        </svg>
+      </div>
+
+      <hr>
+
+      <div class="btn-row">
+        <button id="save-diagram">Guardar</button>
+        <button id="load-diagram">Cargar</button>
+      </div>
+
+    </div>
   </aside>
 
   <main class="svg-wrap">
     <svg id="svg" xmlns="http://www.w3.org/2000/svg" tabindex="0">
-      <!-- fondo blanco -->
       <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+      <defs>
+        <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto">
+          <polygon points="0 0, 6 3, 0 6" fill="#c69b2b"/>
+        </marker>
+      </defs>
     </svg>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.3.1/dist/pouchdb.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

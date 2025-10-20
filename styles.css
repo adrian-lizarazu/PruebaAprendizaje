@@ -14,7 +14,6 @@ body{
   overflow:hidden;
 }
 
-/* barra lateral (interfaz) */
 .toolbar{
   width:280px;
   background:linear-gradient(180deg,var(--toolbar-bg), #0f2230);
@@ -36,7 +35,6 @@ body{
   justify-content:space-between;
   margin-bottom:8px;
 }
-
 .toolbar button{
   flex:1;
   padding:10px;
@@ -49,8 +47,6 @@ body{
   margin-right:8px;
 }
 .toolbar button:hover{opacity:0.95}
-
-/* mini SVG de previsualización */
 .icon-preview{
   width:38px;
   height:38px;
@@ -58,11 +54,8 @@ body{
   border-radius:8px;
   box-shadow:0 0 4px rgba(0,0,0,0.15);
 }
-
 .toolbar .hint{margin:8px 0 4px 0;font-size:13px}
 .toolbar ul{margin:0;padding-left:18px;font-size:13px;line-height:1.4}
-
-/* área de trabajo */
 .svg-wrap{
   flex:1;
   background:#e6eef6;
@@ -71,8 +64,6 @@ body{
   justify-content:stretch;
   padding:12px;
 }
-
-/* SVG ocupa todo el espacio disponible */
 #svg{
   flex:1;
   width:100%;
@@ -80,14 +71,10 @@ body{
   border-radius:6px;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
 }
-
-/* estilos por defecto de figuras */
 .shape{
   cursor:move;
   user-select:none;
 }
-
-/* borde cuando seleccionado: se muestra un rectángulo invisible para selección */
 .selection-rect{
   fill: none;
   stroke: var(--accent);
@@ -95,14 +82,10 @@ body{
   stroke-dasharray:4 4;
   pointer-events:none;
 }
-
-/* asas de redimension */
 .handle{
   cursor:nwse-resize;
   pointer-events:all;
 }
-
-/* texto dentro de formas */
 .shape-text{
   font-size:14px;
   font-weight:600;
@@ -111,11 +94,6 @@ body{
   text-anchor:middle;
   dominant-baseline:middle;
 }
-
-/* esconder elementos por defecto */
 .handle, .selection-rect { display:none; }
-
-/* mostrar cuando el grupo tiene la clase 'selected' */
 .g-selected .handle,
 .g-selected .selection-rect { display:block; }
-
