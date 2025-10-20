@@ -1,16 +1,12 @@
-/* Editor SVG: crea formas, permite mover, redimensionar, editar texto y eliminar.
-   Comentarios en español para entender cada parte. */
-
-const svg = document.getElementById('canvas');
+const svg = document.getElementById('svg');
 const NS = "http://www.w3.org/2000/svg";
 
-let zIndexCounter = 1; // para llevar "delante" al seleccionado
-let current = null;    // el grupo (<g>) seleccionado
-let mode = null;       // "drag" | "resize"
+let zIndexCounter = 1;
+let current = null;
+let mode = null;
 let dragOffset = {x:0,y:0};
-let resizeInfo = null; // {handle,dir,orig,...}
+let resizeInfo = null;
 
-// UTIL: convertir evento pointer a coordenadas SVG
 function toSvgPoint(evt){
   const pt = svg.createSVGPoint();
   pt.x = evt.clientX;
@@ -18,7 +14,6 @@ function toSvgPoint(evt){
   return pt.matrixTransform(svg.getScreenCTM().inverse());
 }
 
-// Crear un grupo que contiene forma + texto + handles
 function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
   const g = document.createElementNS(NS,'g');
   g.classList.add('shape-group');
@@ -31,7 +26,6 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
   g.setAttribute('transform', `translate(${x},${y})`);
   g.style.zIndex = ++zIndexCounter;
 
-  // Crear la forma según el tipo
   let shape;
   if(type === 'square'){
     shape = document.createElementNS(NS,'rect');
@@ -50,7 +44,6 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
     shape.setAttribute('rx', Math.min(w,h)*0.2);
     shape.setAttribute('ry', Math.min(w,h)*0.2);
   } else if(type === 'diamond'){
-    // rombo: lo generamos como polígono centrado en (w/2,h/2)
     shape = document.createElementNS(NS,'polygon');
     const points = diamondPoints(w,h);
     shape.setAttribute('points', points.map(p=>p.join(',')).join(' '));
@@ -62,7 +55,6 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
   shape.setAttribute('stroke-width', 1.6);
   g.appendChild(shape);
 
-  // Texto centrado
   const tx = document.createElementNS(NS,'text');
   tx.classList.add('shape-text');
   tx.textContent = text;
@@ -70,7 +62,6 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
   tx.setAttribute('y', h/2);
   g.appendChild(tx);
 
-  // Rectangular de selección (visual)
   const sel = document.createElementNS(NS,'rect');
   sel.classList.add('selection-rect');
   sel.setAttribute('x', -6);
@@ -79,7 +70,6 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
   sel.setAttribute('height', h+12);
   g.appendChild(sel);
 
-  // Asas: 4 asas (esquina inferior-derecha para ejemplo) -> vamos a usar 4 esquinas
   const handles = [
     {name:'tl', cx:0, cy:0, cursor:'nwse-resize'},
     {name:'tr', cx:w, cy:0, cursor:'nesw-resize'},
@@ -102,20 +92,15 @@ function makeShapeGroup(type, x=120, y=80, w=120, h=80, text='Texto'){
     g.appendChild(c);
   });
 
-  // eventos
   g.addEventListener('pointerdown', shapePointerDown);
   g.addEventListener('dblclick', groupDoubleClick);
-  // prevenir que svg capture el pointer directamente
   g.querySelectorAll('.handle').forEach(h=>h.addEventListener('pointerdown', handlePointerDown));
 
-  // permitir foco/teclas
   svg.appendChild(g);
   return g;
 }
 
-// calcular puntos para el rombo (relativo a 0,0)
 function diamondPoints(w,h){
-  // centro
   const cx = w/2, cy = h/2;
   return [
     [cx, 0],
@@ -124,8 +109,6 @@ function diamondPoints(w,h){
     [0, cy]
   ];
 }
-
-/* ---------- eventos y lógica de selección / arrastre / resize ---------- */
 
 function clearSelection(){
   if(current){
@@ -138,22 +121,16 @@ function selectGroup(g){
   clearSelection();
   current = g;
   g.classList.add('g-selected');
-  // llevar al frente
   g.parentNode.appendChild(g);
-  // actualizar z-index (visual; SVG no tiene z-index real)
   zIndexCounter++;
-  // actualizamos la visibles (selection rect y handles) con dimensiones actuales
   updateGroupVisuals(g);
 }
 
-// pointerdown sobre la forma (grupo)
 function shapePointerDown(evt){
-  // marcar el elemento
   evt.stopPropagation();
   const g = evt.currentTarget;
   selectGroup(g);
 
-  // si el target es manejador lo ignoramos aquí (handled by handlePointerDown)
   if(evt.target.classList.contains('handle')) return;
 
   mode = 'drag';
@@ -163,14 +140,11 @@ function shapePointerDown(evt){
   dragOffset.x = p.x - gx;
   dragOffset.y = p.y - gy;
 
-  // captura pointer para recibir move/up even cuando el cursor salga del svg
   g.setPointerCapture(evt.pointerId);
-
   window.addEventListener('pointermove', onPointerMove);
   window.addEventListener('pointerup', onPointerUp);
 }
 
-// pointerdown sobre un handle
 function handlePointerDown(evt){
   evt.stopPropagation();
   const handle = evt.currentTarget;
@@ -211,27 +185,24 @@ function onPointerMove(evt){
     let {x,y,w,h} = info.orig;
     const handle = info.handle;
 
-    // según el asa, ajustamos x,y,w,h
-    if(handle === 'br'){ // bottom-right
+    if(handle === 'br'){
       w = Math.max(20, info.orig.w + dx);
       h = Math.max(20, info.orig.h + dy);
-    } else if(handle === 'tr'){ // top-right
+    } else if(handle === 'tr'){
       w = Math.max(20, info.orig.w + dx);
-      // mover y hacia arriba
       y = info.orig.y + dy;
       h = Math.max(20, info.orig.h - dy);
-    } else if(handle === 'tl'){ // top-left
+    } else if(handle === 'tl'){
       x = info.orig.x + dx;
       y = info.orig.y + dy;
       w = Math.max(20, info.orig.w - dx);
       h = Math.max(20, info.orig.h - dy);
-    } else if(handle === 'bl'){ // bottom-left
+    } else if(handle === 'bl'){
       x = info.orig.x + dx;
       w = Math.max(20, info.orig.w - dx);
       h = Math.max(20, info.orig.h + dy);
     }
 
-    // guardar y aplicar
     current.setAttribute('data-x', x);
     current.setAttribute('data-y', y);
     current.setAttribute('data-w', w);
@@ -246,18 +217,13 @@ function onPointerUp(evt){
   resizeInfo = null;
   window.removeEventListener('pointermove', onPointerMove);
   window.removeEventListener('pointerup', onPointerUp);
-  // release captures
-  try{
-    if(evt.currentTarget) evt.currentTarget.releasePointerCapture?.(evt.pointerId);
-  }catch(e){}
+  try{ if(evt.currentTarget) evt.currentTarget.releasePointerCapture?.(evt.pointerId); }catch(e){}
 }
 
-// actualizar rect de selección, handles y forma según atributos
 function updateGroupVisuals(g){
   const type = g.getAttribute('data-type');
   const w = parseFloat(g.getAttribute('data-w'));
   const h = parseFloat(g.getAttribute('data-h'));
-  // actualizamos forma en cada tipo
   const shape = g.querySelector('.shape');
   if(type === 'diamond'){
     shape.setAttribute('points', diamondPoints(w,h).map(p=>p.join(',')).join(' '));
@@ -265,31 +231,20 @@ function updateGroupVisuals(g){
     shape.setAttribute('width', w);
     shape.setAttribute('height', h);
     if(type === 'round-rect'){
-      // ajustar radio de esquinas
       const rx = Math.min(w,h)*0.18;
       shape.setAttribute('rx', rx);
       shape.setAttribute('ry', rx);
     }
   }
-
-  // actualizar texto posición y tamaño
   const txt = g.querySelector('.shape-text');
   txt.setAttribute('x', w/2);
   txt.setAttribute('y', h/2);
-
-  // actualizar selection rect (toma en cuenta padding)
   const sel = g.querySelector('.selection-rect');
   sel.setAttribute('width', w + 12);
   sel.setAttribute('height', h + 12);
 
-  // actualizar handles (4 primero rects con clase handle)
   const hs = Array.from(g.querySelectorAll('.handle'));
-  const coords = [
-    [0,0],
-    [w,0],
-    [w,h],
-    [0,h]
-  ];
+  const coords = [[0,0],[w,0],[w,h],[0,h]];
   hs.forEach((hNode,i)=>{
     const [cx,cy] = coords[i];
     hNode.setAttribute('x', cx - 4);
@@ -297,42 +252,100 @@ function updateGroupVisuals(g){
   });
 }
 
-/* doble click en el grupo: si en texto => editar texto; si en forma => tambien editar texto */
+/* ---------- doble click para editar texto con estilo ---------- */
 function groupDoubleClick(evt){
   evt.stopPropagation();
   const g = evt.currentTarget;
   const txt = g.querySelector('.shape-text');
-  const newText = prompt('Editar texto:', txt.textContent);
-  if(newText !== null){
-    txt.textContent = newText;
-  }
+
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.background = 'rgba(0,0,0,0.3)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = 10000;
+
+  const box = document.createElement('div');
+  box.style.background = 'linear-gradient(180deg, #16324a, #0f2230)';
+  box.style.padding = '16px';
+  box.style.borderRadius = '8px';
+  box.style.minWidth = '250px';
+  box.style.textAlign = 'center';
+  box.style.fontFamily = 'Arial, sans-serif';
+  box.style.display = 'flex';
+  box.style.flexDirection = 'column';
+  box.style.gap = '8px';
+  box.style.color = '#eef6fb';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = txt.textContent;
+  input.style.fontSize = '16px';
+  input.style.padding = '6px';
+  input.style.width = '100%';
+  input.style.borderRadius = '4px';
+  input.style.border = '1px solid #2ea3f2';
+  input.style.outline = 'none';
+  box.appendChild(input);
+
+  const btn = document.createElement('button');
+  btn.textContent = 'Aceptar';
+  btn.style.fontSize = '14px';
+  btn.style.padding = '6px';
+  btn.style.border = 'none';
+  btn.style.borderRadius = '6px';
+  btn.style.cursor = 'pointer';
+  btn.style.background = '#2ea3f2';
+  btn.style.color = '#fff';
+  btn.onclick = () => {
+    txt.textContent = input.value;
+    document.body.removeChild(overlay);
+  };
+  box.appendChild(btn);
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  input.focus();
+
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      txt.textContent = input.value;
+      document.body.removeChild(overlay);
+    }
+  });
 }
 
 /* ---------- botones para agregar formas ---------- */
 document.getElementById('add-square').addEventListener('click', ()=>{
-  const g = makeShapeGroup('square', 100, 80, 120, 120, 'Cuadrado');
+  const g = makeShapeGroup('square', 100, 80, 120, 120, 'Funcion');
   selectGroup(g);
 });
 document.getElementById('add-round-rect').addEventListener('click', ()=>{
-  const g = makeShapeGroup('round-rect', 140, 120, 160, 100, 'Rectángulo');
+  const g = makeShapeGroup('round-rect', 140, 120, 160, 60, 'Inicio');
   selectGroup(g);
 });
 document.getElementById('add-diamond').addEventListener('click', ()=>{
-  const g = makeShapeGroup('diamond', 200, 150, 120, 120, 'Rombo');
+  const g = makeShapeGroup('diamond', 200, 150, 120, 120, 'Condicion');
   selectGroup(g);
 });
 
-/* click en el lienzo para deseleccionar */
 svg.addEventListener('pointerdown', (evt)=>{
-  if(evt.target === svg || evt.target.tagName === 'rect' && evt.target.parentNode === svg){
+  if(evt.target === svg || (evt.target.tagName === 'rect' && evt.target.parentNode === svg)){
     clearSelection();
   }
 });
 
-/* permitir borrar con tecla Supr/Backspace */
+// borrar solo con Supr, ignorando Backspace y inputs activos
 window.addEventListener('keydown', (evt)=>{
   if(!current) return;
-  if(evt.key === 'Delete' || evt.key === 'Backspace'){
+  const activeTag = document.activeElement.tagName.toLowerCase();
+  if(activeTag === 'input' || activeTag === 'textarea') return;
+  if(evt.key === 'Delete'){
     current.remove();
     current = null;
   }
